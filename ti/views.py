@@ -25,7 +25,7 @@ def artists(request):
         id = b64encode(str(name).encode()).decode('utf-8')[:22]
         try:
             artist = Artist.objects.get(id=id)
-            self_ = 'https://coldmountain-009.herokuapp.com/artists/' + artist.id
+            self_ = 'https://cold-mountain-009.herokuapp.com/artists/' + artist.id
             response = json.dumps({
                 'id': artist.id,
                 'name': artist.name,
@@ -44,7 +44,7 @@ def artists(request):
         artists = Artist.objects.all()
         return_list = []
         for artist in artists:
-            self_ = 'https://coldmountain-009.herokuapp.com/artists/' + artist.id
+            self_ = 'https://cold-mountain-009.herokuapp.com/artists/' + artist.id
             artist_to_add = {
                 'id': artist.id,
                 'name': artist.name,
@@ -65,7 +65,7 @@ def artistsId(request, artist_id):
     if request.method == 'GET':
         try:
             artist = Artist.objects.get(id=artist_id)
-            self_ = 'https://coldmountain-009.herokuapp.com/artists/' + artist.id
+            self_ = 'https://cold-mountain-009.herokuapp.com/artists/' + artist.id
             response = json.dumps({ 
                 'id': artist.id,
                 'name': artist.name,
@@ -113,7 +113,7 @@ def albumsPerArtist(request, artist_id):
             album = Album(id=id, artist_id=artist_id, name=name, genre=genre)
             album.save()
             exists = False
-        base = 'https://coldmountain-009.herokuapp.com/'
+        base = 'https://cold-mountain-009.herokuapp.com/'
         response = json.dumps({ 
             'id': id, 
             'artist_id': artist_id, 
@@ -132,7 +132,7 @@ def albumsPerArtist(request, artist_id):
             artist = Artist.objects.get(id=artist_id)
             albums = Album.objects.filter(artist_id=artist_id).all()
             return_list = []
-            base = 'https://coldmountain-009.herokuapp.com/'
+            base = 'https://cold-mountain-009.herokuapp.com/'
             for album in albums:
                 return_list.append({
                     'id': album.id, 
@@ -157,7 +157,7 @@ def albumsId(request, album_id):
     if request.method == 'GET':
         try:
             album = Album.objects.get(id=album_id)
-            base = 'https://coldmountain-009.herokuapp.com/'
+            base = 'https://cold-mountain-009.herokuapp.com/'
             response = json.dumps({ 
                 'id': album_id, 
                 'artist_id': album.artist_id, 
@@ -188,13 +188,13 @@ def albums(request):
         albums = Album.objects.all()
         return_list = []
         for album in albums:
-            self_ = 'https://coldmountain-009.herokuapp.com/albums/' + album.id
+            self_ = 'https://cold-mountain-009.herokuapp.com/albums/' + album.id
             album_to_add = {
                 'id': album.id,
                 'artist_id': album.artist_id,
                 'name': album.name,
                 'genre': album.genre,
-                'artist': 'https://coldmountain-009.herokuapp.com/albums/' + album.artist_id,
+                'artist': 'https://cold-mountain-009.herokuapp.com/albums/' + album.artist_id,
                 'tracks': self_ + '/tracks',
                 'self': self_,
             }
@@ -229,7 +229,7 @@ def tracksPerAlbum(request, album_id):
             existe = False
             track.save()
         artist = Album.objects.get(id=album_id).artist_id
-        base = 'https://coldmountain-009.herokuapp.com/'
+        base = 'https://cold-mountain-009.herokuapp.com/'
         response = json.dumps({
             'id': id,
             'album_id': album_id,
@@ -249,7 +249,7 @@ def tracksPerAlbum(request, album_id):
             tracks = Track.objects.filter(album_id=album_id).all()
             artist = Album.objects.get(id=album_id).artist_id
             return_list = []
-            base = 'https://coldmountain-009.herokuapp.com/'
+            base = 'https://cold-mountain-009.herokuapp.com/'
             for track in tracks:
                 return_list.append({
                     'id': track.id,
@@ -279,7 +279,7 @@ def tracksId(request, track_id):
             response = json.dumps({})
             return HttpResponse(response, content_type='application/json', status=404, reason='canción no encontrada')
         artist = Album.objects.get(id=track.album_id).artist_id
-        base = 'https://coldmountain-009.herokuapp.com/'
+        base = 'https://cold-mountain-009.herokuapp.com/'
         response = json.dumps({
             'id': track.id,
             'album_id': track.album_id,
@@ -307,7 +307,7 @@ def tracks(request):
     if request.method == 'GET':
         tracks = Track.objects.all()
         return_list = []
-        base = 'https://coldmountain-009.herokuapp.com/'
+        base = 'https://cold-mountain-009.herokuapp.com/'
         for track in tracks:
             artist = Album.objects.get(id=track.album_id).artist_id
             return_list.append({
@@ -334,7 +334,7 @@ def artistTracks(request, artist_id):
             return_list = []
             for album in albums:
                 tracks = Track.objects.filter(album_id=album.id).all()
-                base = 'https://coldmountain-009.herokuapp.com/'
+                base = 'https://cold-mountain-009.herokuapp.com/'
                 for track in tracks:
                     return_list.append({
                         'id': track.id,
