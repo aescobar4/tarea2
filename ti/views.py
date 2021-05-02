@@ -299,6 +299,7 @@ def tracksId(request, track_id):
 # GET de /tracks
 @csrf_exempt
 def tracks(request):
+    
     if request.method == 'GET':
         tracks = Track.objects.all()
         return_list = []
