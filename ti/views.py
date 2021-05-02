@@ -182,6 +182,7 @@ def albumsId(request, album_id):
         return HttpResponse(content_type='application/json', status=405)
 
 # GET de /albums
+@csrf_exempt
 def albums(request):
     if request.method == 'GET':
         albums = Album.objects.all()
@@ -299,13 +300,15 @@ def tracksId(request, track_id):
 # GET de /tracks
 @csrf_exempt
 def tracks(request):
-    
     if request.method == 'GET':
         tracks = Track.objects.all()
         return_list = []
         base = 'https://cloudy-city-01.herokuapp.com/'
         for track in tracks:
-            artist = Album.objects.get(id=track.album_id).artist_id
+            try:
+                artist = Album.objects.get(id=track.album_id).artist_id
+            except:
+                return HttpResponse(content_type='application/json', status=405)
             return_list.append({
                 'id': track.id,
                 'album_id': track.album_id,
@@ -322,6 +325,7 @@ def tracks(request):
         return HttpResponse(content_type='application/json', status=405)
 
 # GET de /artists/{artist_id}/tracks
+@csrf_exempt
 def artistTracks(request, artist_id):
     if request.method == 'GET':
         try:
@@ -373,7 +377,6 @@ def playArtist(request, artist_id):
     else:
         return HttpResponse(content_type='application/json', status=405)
     
-
 # PUT de /albums/{album_id}/tracks/play
 @csrf_exempt
 def playAlbum(request, album_id):
