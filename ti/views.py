@@ -307,18 +307,18 @@ def tracks(request):
         for track in tracks:
             try:
                 artist = Album.objects.get(id=track.album_id).artist_id
+                return_list.append({
+                    'id': track.id,
+                    'album_id': track.album_id,
+                    'duration': track.duration,
+                    'name': track.name,
+                    'times_played': track.times_played,
+                    'artist': base + 'artists/' + artist,
+                    'album': base + 'albums/' + track.album_id,
+                    'self': base + 'tracks/' + track.id,
+                })
             except:
-                return HttpResponse(content_type='application/json', status=405)
-            return_list.append({
-                'id': track.id,
-                'album_id': track.album_id,
-                'duration': track.duration,
-                'name': track.name,
-                'times_played': track.times_played,
-                'artist': base + 'artists/' + artist,
-                'album': base + 'albums/' + track.album_id,
-                'self': base + 'tracks/' + track.id,
-            })
+                a = 'a'
         response = json.dumps(return_list)
         return HttpResponse(response, content_type='application/json', status=200, reason='operación exitosa')
     else:
