@@ -20,8 +20,7 @@ def artists(request):
             name = payload['name']
             age = payload['age']
         except:
-            response = json.dumps({})
-            return HttpResponse(response, content_type='application/json', status=400, reason='input inválido')
+            return HttpResponse(content_type='application/json', status=400, reason='input inválido')
         id = b64encode(str(name).encode()).decode('utf-8')[:22]
         try:
             artist = Artist.objects.get(id=id)
@@ -38,7 +37,15 @@ def artists(request):
         except:
             artist = Artist(id=id, name=name, age=age)
             artist.save()
-            response = json.dumps({ 'id': id, 'name': name, 'age': age})
+            self_ = 'https://cloudy-city-01.herokuapp.com/artists/' + id
+            response = json.dumps({ 
+                'id': id, 
+                'name': name, 
+                'age': age,
+                'albums': self_ + '/albums',
+                'tracks': self_ + '/tracks',
+                'self': self_,
+                })
         return HttpResponse(response, content_type='application/json', status=201, reason='artista creado')
     elif request.method == 'GET':
         artists = Artist.objects.all()
@@ -57,7 +64,7 @@ def artists(request):
         response = json.dumps(return_list)
         return HttpResponse(response, content_type='application/json', status=200, reason='resultados obtenidos')
     else:
-        return HttpResponse(response, content_type='application/json', status=405)
+        return HttpResponse(content_type='application/json', status=405)
 
 # GET y DELETE de /artists/{artist_id}
 @csrf_exempt
@@ -76,35 +83,30 @@ def artistsId(request, artist_id):
             })
             return HttpResponse(response, content_type='application/json', status=200, reason='operación exitosa')
         except:
-            response = json.dumps({})
-            return HttpResponse(response, content_type='application/json', status=404, reason='artista no encontrado')
+            return HttpResponse(content_type='application/json', status=404, reason='artista no encontrado')
     elif request.method == 'DELETE':
         try:
             Artist.objects.get(id=artist_id).delete()
-            response = json.dumps({})
-            return HttpResponse(response, content_type='application/json', status=204, reason='artista eliminado')
+            return HttpResponse(content_type='application/json', status=204, reason='artista eliminado')
         except:
-            response = json.dumps({})
-            return HttpResponse(response, content_type='application/json', status=404, reason='artista inexistente')
+            return HttpResponse(content_type='application/json', status=404, reason='artista inexistente')
     else:
-        return HttpResponse(response, content_type='application/json', status=405)
+        return HttpResponse(content_type='application/json', status=405)
 
 # POST y GET de /artists/{artist_id}/albums
 @csrf_exempt
 def albumsPerArtist(request, artist_id):
     if request.method == 'POST':
         try:
-            Artist.objects.get(id=artist_id)
-        except:
-            response = json.dumps({})
-            return HttpResponse(response, content_type='application/json', status=422, reason='artista no existe')
-        payload = json.loads(request.body)
-        try:
             name = payload['name']
             genre = payload['genre']
         except:
-            response = json.dumps({})
-            return HttpResponse(response, content_type='application/json', status=400, reason='input inválido')
+            return HttpResponse(content_type='application/json', status=400, reason='input inválido')
+        try:
+            Artist.objects.get(id=artist_id)
+        except:
+            return HttpResponse(content_type='application/json', status=422, reason='artista no existe')
+        payload = json.loads(request.body)
         id = b64encode(str(name).encode()).decode('utf-8')[:22]
         try:
             album = Album.objects.get(id=id)
@@ -146,10 +148,9 @@ def albumsPerArtist(request, artist_id):
             response = json.dumps(return_list)
             return HttpResponse(response, content_type='application/json', status=200, reason='resultados obtenidos')
         except:
-            response = json.dumps({})
-            return HttpResponse(response, content_type='application/json', status=404, reason='artista no encontrado')
+            return HttpResponse(content_type='application/json', status=404, reason='artista no encontrado')
     else:
-        return HttpResponse(response, content_type='application/json', status=405)
+        return HttpResponse(content_type='application/json', status=405)
 
 # GET y DELETE de /albums/{album_id}
 @csrf_exempt
@@ -169,18 +170,15 @@ def albumsId(request, album_id):
             })
             return HttpResponse(response, content_type='application/json', status=200, reason='operación exitosa')
         except:
-            response = json.dumps({})
-            return HttpResponse(response, content_type='application/json', status=404, reason='álbum no encontrado')
+            return HttpResponse(content_type='application/json', status=404, reason='álbum no encontrado')
     elif request.method == 'DELETE':
         try:
             Album.objects.get(id=album_id).delete()
-            response = json.dumps({})
-            return HttpResponse(response, content_type='application/json', status=204, reason='álbum eliminado')
+            return HttpResponse(content_type='application/json', status=204, reason='álbum eliminado')
         except:
-            response = json.dumps({})
-            return HttpResponse(response, content_type='application/json', status=404, reason='álbum no encontrado')
+            return HttpResponse(content_type='application/json', status=404, reason='álbum no encontrado')
     else:
-        return HttpResponse(response, content_type='application/json', status=405)
+        return HttpResponse(content_type='application/json', status=405)
 
 # GET de /albums
 def albums(request):
@@ -202,24 +200,22 @@ def albums(request):
         response = json.dumps(return_list)
         return HttpResponse(response, content_type='application/json', status=200, reason='resultados obtenidos')
     else:
-        return HttpResponse(response, content_type='application/json', status=405)
+        return HttpResponse(content_type='application/json', status=405)
 
 # GET y POST de /albums/{album_id}/tracks
 @csrf_exempt
 def tracksPerAlbum(request, album_id):
     if request.method == 'POST':
         try:
-            album = Album.objects.get(id=album_id)
-        except:
-            response = json.dumps({})
-            return HttpResponse(response, content_type='application/json', status=422, reason='álbum no encontrado')
-        payload = json.loads(request.body)
-        try:
             name = payload['name']
             duration = payload['duration']
         except:
-            response = json.dumps({})
-            return HttpResponse(response, content_type='application/json', status=400, reason='input inválido')
+            return HttpResponse(content_type='application/json', status=400, reason='input inválido')
+        try:
+            album = Album.objects.get(id=album_id)
+        except:
+            return HttpResponse(content_type='application/json', status=422, reason='álbum no encontrado')
+        payload = json.loads(request.body)
         id = b64encode(str(name).encode()).decode('utf-8')[:22]
         try:
             track = Track.objects.get(id=id)
@@ -264,10 +260,9 @@ def tracksPerAlbum(request, album_id):
             response = json.dumps(return_list)
             return HttpResponse(response, content_type='application/json', status=200, reason='resultados obtenidos')
         except:
-            response = json.dumps({})
-            return HttpResponse(response, content_type='application/json', status=404, reason='álbum no encontrado')
+            return HttpResponse(content_type='application/json', status=404, reason='álbum no encontrado')
     else:
-        return HttpResponse(response, content_type='application/json', status=405)
+        return HttpResponse(content_type='application/json', status=405)
 
 # GET y DELETE de /tracks/{track_id}
 @csrf_exempt
@@ -276,8 +271,7 @@ def tracksId(request, track_id):
         try:
             track = Track.objects.get(id=track_id)
         except:
-            response = json.dumps({})
-            return HttpResponse(response, content_type='application/json', status=404, reason='canción no encontrada')
+            return HttpResponse(content_type='application/json', status=404, reason='canción no encontrada')
         artist = Album.objects.get(id=track.album_id).artist_id
         base = 'https://cloudy-city-01.herokuapp.com/'
         response = json.dumps({
@@ -292,14 +286,13 @@ def tracksId(request, track_id):
         })
         return HttpResponse(response, content_type='application/json', status=200, reason='operación exitosa')
     elif request.method == 'DELETE':
-        response = json.dumps({})
         try:
             Track.objects.get(id=track_id).delete()
-            return HttpResponse(response, content_type='application/json', status=404, reason='canción eliminada')
+            return HttpResponse(content_type='application/json', status=404, reason='canción eliminada')
         except:
-            return HttpResponse(response, content_type='application/json', status=404, reason='canción inexistente')
+            return HttpResponse(content_type='application/json', status=404, reason='canción inexistente')
     else:
-        return HttpResponse(response, content_type='application/json', status=405)
+        return HttpResponse(content_type='application/json', status=405)
 
 # GET de /tracks
 @csrf_exempt
@@ -323,7 +316,7 @@ def tracks(request):
         response = json.dumps(return_list)
         return HttpResponse(response, content_type='application/json', status=200, reason='operación exitosa')
     else:
-        return HttpResponse(response, content_type='application/json', status=405)
+        return HttpResponse(content_type='application/json', status=405)
 
 # GET de /artists/{artist_id}/tracks
 def artistTracks(request, artist_id):
@@ -349,10 +342,9 @@ def artistTracks(request, artist_id):
             response = json.dumps(return_list)
             return HttpResponse(response, content_type='application/json', status=200, reason='resultados obtenidos')
         except:
-            response = json.dumps({})
-            return HttpResponse(response, content_type='application/json', status=404, reason='artista no encontrado')
+            return HttpResponse(content_type='application/json', status=404, reason='artista no encontrado')
     else:
-        return HttpResponse(response, content_type='application/json', status=405)
+        return HttpResponse(content_type='application/json', status=405)
 
 # PUT de /artists/{artist_id}/albums/play
 @csrf_exempt
@@ -361,8 +353,7 @@ def playArtist(request, artist_id):
         try:
             Artist.objects.get(id=artist_id)
         except:
-            response = json.dumps({})
-            return HttpResponse(response, content_type='application/json', status=404, reason='artista no encontrado')
+            return HttpResponse(content_type='application/json', status=404, reason='artista no encontrado')
         albums = Album.objects.filter(artist_id=artist_id).all()
         for album in albums:
             tracks = Track.objects.filter(album_id=album.id).all()
@@ -371,16 +362,13 @@ def playArtist(request, artist_id):
                 track.times_played += 1
                 print(track.times_played, track.name)
                 track.save()
-        response = json.dumps({})
         return HttpResponse(
-            response, 
             content_type='application/json', 
             status=200, 
             reason='todas las canciones del artista fueron reproducidas'
         )
     else:
-        response = json.dumps({})
-        return HttpResponse(response, content_type='application/json', status=405)
+        return HttpResponse(content_type='application/json', status=405)
     
 
 # PUT de /albums/{album_id}/tracks/play
@@ -390,17 +378,14 @@ def playAlbum(request, album_id):
         try:
             Album.objects.get(id=album_id)
         except:
-            response = json.dumps({})
-            return HttpResponse(response, content_type='application/json', status=404, reason='álbum no encontrado')
+            return HttpResponse(content_type='application/json', status=404, reason='álbum no encontrado')
         tracks = Track.objects.filter(album_id=album_id).all()
         for track in tracks:
             track.times_played += 1
             track.save()
-        response = json.dumps({})
-        return HttpResponse(response, content_type='application/json', status=200, reason='canciones del álbum reproducidas')
+        return HttpResponse(content_type='application/json', status=200, reason='canciones del álbum reproducidas')
     else:
-        response = json.dumps({})
-        return HttpResponse(response, content_type='application/json', status=405)
+        return HttpResponse(content_type='application/json', status=405)
 
 # PUT de /tracks/{track_id}/play
 @csrf_exempt
@@ -409,13 +394,10 @@ def playTrack(request, track_id):
         try:
             Album.objects.get(id=album_id)
         except:
-            response = json.dumps({})
-            return HttpResponse(response, content_type='application/json', status=404, reason='canción no encontrada')
+            return HttpResponse(content_type='application/json', status=404, reason='canción no encontrada')
         track = Track.objects.get(id=track_id)
         track.times_played += 1
         track.save()
-        response = json.dumps({})
-        return HttpResponse(response, content_type='application/json', status=200, reason='canción reproducida')
+        return HttpResponse(content_type='application/json', status=200, reason='canción reproducida')
     else:
-        response = json.dumps({})
-        return HttpResponse(response, content_type='application/json', status=405)
+        return HttpResponse(content_type='application/json', status=405)
