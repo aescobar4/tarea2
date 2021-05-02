@@ -14,8 +14,8 @@ def index(request):
 # POST y GET de /artists
 @csrf_exempt
 def artists(request):
+    payload = json.loads(request.body)
     if request.method == 'POST':
-        payload = json.loads(request.body)
         try:
             name = payload['name']
             age = payload['age']
@@ -96,6 +96,7 @@ def artistsId(request, artist_id):
 # POST y GET de /artists/{artist_id}/albums
 @csrf_exempt
 def albumsPerArtist(request, artist_id):
+    payload = json.loads(request.body)
     if request.method == 'POST':
         try:
             name = payload['name']
@@ -106,7 +107,6 @@ def albumsPerArtist(request, artist_id):
             Artist.objects.get(id=artist_id)
         except:
             return HttpResponse(content_type='application/json', status=422, reason='artista no existe')
-        payload = json.loads(request.body)
         id = b64encode(str(name).encode()).decode('utf-8')[:22]
         try:
             album = Album.objects.get(id=id)
@@ -205,6 +205,7 @@ def albums(request):
 # GET y POST de /albums/{album_id}/tracks
 @csrf_exempt
 def tracksPerAlbum(request, album_id):
+    payload = json.loads(request.body)
     if request.method == 'POST':
         try:
             name = payload['name']
@@ -215,7 +216,6 @@ def tracksPerAlbum(request, album_id):
             album = Album.objects.get(id=album_id)
         except:
             return HttpResponse(content_type='application/json', status=422, reason='álbum no encontrado')
-        payload = json.loads(request.body)
         id = b64encode(str(name).encode()).decode('utf-8')[:22]
         try:
             track = Track.objects.get(id=id)
