@@ -14,8 +14,8 @@ def index(request):
 # POST y GET de /artists
 @csrf_exempt
 def artists(request):
-    payload = json.loads(request.body)
     if request.method == 'POST':
+        payload = json.loads(request.body)
         try:
             name = payload['name']
             age = payload['age']
@@ -206,8 +206,8 @@ def albums(request):
 # GET y POST de /albums/{album_id}/tracks
 @csrf_exempt
 def tracksPerAlbum(request, album_id):
-    payload = json.loads(request.body)
     if request.method == 'POST':
+        payload = json.loads(request.body)
         try:
             name = payload['name']
             duration = payload['duration']
