@@ -19,6 +19,8 @@ def artists(request):
         try:
             name = payload['name']
             age = payload['age']
+            if str(name) != name:
+                return HttpResponse(content_type='application/json', status=400, reason='input inválido')
         except:
             return HttpResponse(content_type='application/json', status=400, reason='input inválido')
         id = b64encode(name.encode()).decode('utf-8')[:22]
@@ -101,6 +103,8 @@ def albumsPerArtist(request, artist_id):
         try:
             name = payload['name']
             genre = payload['genre']
+            if str(name) != name:
+                return HttpResponse(content_type='application/json', status=400, reason='input inválido')
         except:
             return HttpResponse(content_type='application/json', status=400, reason='input inválido')
         try:
@@ -212,6 +216,8 @@ def tracksPerAlbum(request, album_id):
         try:
             name = payload['name']
             duration = payload['duration']
+            if str(name) != name:
+                return HttpResponse(content_type='application/json', status=400, reason='input inválido')
         except:
             return HttpResponse(content_type='application/json', status=400, reason='input inválido')
         try:
@@ -220,10 +226,11 @@ def tracksPerAlbum(request, album_id):
             return HttpResponse(content_type='application/json', status=422, reason='álbum no encontrado')
         string_to_encode = name + ":" + album_id
         id = b64encode(name.encode()).decode('utf-8')[:22]
-        if Track.objects.filter(id=id):
+        try:
             track = Track.objects.get(id=id)
             existe = True
-        else:
+            print(id, track, track.id)
+        except:
             track = Track(id=id, name=name, album_id=album_id, duration=duration)
             existe = False
             track.save()   
