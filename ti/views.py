@@ -95,9 +95,9 @@ def artistsId(request, artist_id):
 
 # POST y GET de /artists/{artist_id}/albums
 @csrf_exempt
-def albumsPerArtist(request, artist_id):
-    payload = json.loads(request.body)
+def albumsPerArtist(request, artist_id):    
     if request.method == 'POST':
+        payload = json.loads(request.body)
         try:
             name = payload['name']
             genre = payload['genre']
@@ -291,7 +291,7 @@ def tracksId(request, track_id):
     elif request.method == 'DELETE':
         try:
             Track.objects.get(id=track_id).delete()
-            return HttpResponse(content_type='application/json', status=404, reason='canción eliminada')
+            return HttpResponse(content_type='application/json', status=204, reason='canción eliminada')
         except:
             return HttpResponse(content_type='application/json', status=404, reason='canción inexistente')
     else:
