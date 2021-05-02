@@ -21,7 +21,7 @@ def artists(request):
             age = payload['age']
         except:
             return HttpResponse(content_type='application/json', status=400, reason='input inválido')
-        id = b64encode(str(name).encode()).decode('utf-8')[:22]
+        id = b64encode(name.encode()).decode('utf-8')[:22]
         try:
             artist = Artist.objects.get(id=id)
             self_ = 'https://cloudy-city-01.herokuapp.com/artists/' + artist.id
@@ -107,7 +107,7 @@ def albumsPerArtist(request, artist_id):
             Artist.objects.get(id=artist_id)
         except:
             return HttpResponse(content_type='application/json', status=422, reason='artista no existe')
-        id = b64encode(str(name).encode()).decode('utf-8')[:22]
+        id = b64encode(name.encode()).decode('utf-8')[:22]
         try:
             album = Album.objects.get(id=id)
             exists = True
@@ -216,7 +216,7 @@ def tracksPerAlbum(request, album_id):
             album = Album.objects.get(id=album_id)
         except:
             return HttpResponse(content_type='application/json', status=422, reason='álbum no encontrado')
-        id = b64encode(str(name).encode()).decode('utf-8')[:22]
+        id = b64encode(name.encode()).decode('utf-8')[:22]
         try:
             track = Track.objects.get(id=id)
             existe = True
