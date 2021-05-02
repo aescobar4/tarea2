@@ -88,7 +88,14 @@ def artistsId(request, artist_id):
             return HttpResponse(content_type='application/json', status=404, reason='artista no encontrado')
     elif request.method == 'DELETE':
         try:
-            Artist.objects.get(id=artist_id).delete()
+            artist = Artist.objects.get(id=artist_id)
+            albums = Album.objects.filter(id=artist_id).all()
+            for album in albums:
+                tracks = Track.objects.filter(id=album.id).all()
+                for track in tracks:
+                    track.delete()
+                album.delete()
+            artist.delete()
             return HttpResponse(content_type='application/json', status=204, reason='artista eliminado')
         except:
             return HttpResponse(content_type='application/json', status=404, reason='artista inexistente')
@@ -178,7 +185,11 @@ def albumsId(request, album_id):
             return HttpResponse(content_type='application/json', status=404, reason='álbum no encontrado')
     elif request.method == 'DELETE':
         try:
-            Album.objects.get(id=album_id).delete()
+            album = Album.objects.get(id=album_id)
+            tracks = Track.objects.filter(id=album_id).all()
+            for track in tracks:
+                track.delete()
+            album.delete()
             return HttpResponse(content_type='application/json', status=204, reason='álbum eliminado')
         except:
             return HttpResponse(content_type='application/json', status=404, reason='álbum no encontrado')
