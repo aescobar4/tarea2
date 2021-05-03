@@ -240,7 +240,6 @@ def tracksPerAlbum(request, album_id):
         try:
             track = Track.objects.get(id=id)
             existe = True
-            print(id, track, track.id)
         except:
             track = Track(id=id, name=name, album_id=album_id, duration=duration)
             existe = False
@@ -289,26 +288,33 @@ def tracksPerAlbum(request, album_id):
 @csrf_exempt
 def tracksId(request, track_id):
     if request.method == 'GET':
+        print('estoy en el get')
         try:
+            print('caigo aca', track_id)
+            print(Track.objects.all())
             track = Track.objects.get(id=track_id)
+            print('caigo aca 2')
+            artist = Album.objects.get(id=track.album_id).artist_id
+            base = 'https://cloudy-city-01.herokuapp.com/'
+            response = json.dumps({
+                'id': track.id,
+                'album_id': track.album_id,
+                'duration': track.duration,
+                'name': track.name,
+                'times_played': track.times_played,
+                'artist': base + 'artists/' + artist,
+                'album': base + 'albums/' + track.album_id,
+                'self': base + 'tracks/' + track.id,
+            })
+            return HttpResponse(response, content_type='application/json', status=200, reason='operación exitosa')
         except:
             return HttpResponse(content_type='application/json', status=404, reason='canción no encontrada')
-        artist = Album.objects.get(id=track.album_id).artist_id
-        base = 'https://cloudy-city-01.herokuapp.com/'
-        response = json.dumps({
-            'id': track.id,
-            'album_id': track.album_id,
-            'duration': track.duration,
-            'name': track.name,
-            'times_played': track.times_played,
-            'artist': base + 'artists/' + artist,
-            'album': base + 'albums/' + track.album_id,
-            'self': base + 'tracks/' + track.id,
-        })
-        return HttpResponse(response, content_type='application/json', status=200, reason='operación exitosa')
     elif request.method == 'DELETE':
+        print('estoy en delete')
         try:
+            print('caigo aca')
             Track.objects.get(id=track_id).delete()
+            print('caigo aca 2')
             return HttpResponse(content_type='application/json', status=204, reason='canción eliminada')
         except:
             return HttpResponse(content_type='application/json', status=404, reason='canción inexistente')
