@@ -89,9 +89,9 @@ def artistsId(request, artist_id):
     elif request.method == 'DELETE':
         try:
             artist = Artist.objects.get(id=artist_id)
-            albums = Album.objects.filter(id=artist_id).all()
+            albums = Album.objects.filter(artist_id=artist_id).all()
             for album in albums:
-                tracks = Track.objects.filter(id=album.id).all()
+                tracks = Track.objects.filter(album_id=album.id).all()
                 for track in tracks:
                     track.delete()
                 album.delete()
@@ -186,7 +186,7 @@ def albumsId(request, album_id):
     elif request.method == 'DELETE':
         try:
             album = Album.objects.get(id=album_id)
-            tracks = Track.objects.filter(id=album_id).all()
+            tracks = Track.objects.filter(album_id=album_id).all()
             for track in tracks:
                 track.delete()
             album.delete()
