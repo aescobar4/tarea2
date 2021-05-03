@@ -375,8 +375,6 @@ def artistTracks(request, artist_id):
 def playArtist(request, artist_id):
     if request.method == 'PUT':
         try:
-            print(artist_id)
-            print(Artist.objects.all())
             Artist.objects.get(id=artist_id)
         except:
             return HttpResponse(content_type='application/json', status=404, reason='artista no encontrado')
@@ -387,7 +385,7 @@ def playArtist(request, artist_id):
                 print(track.times_played, track.name)
                 track.times_played += 1
                 print(track.times_played, track.name)
-                track.save()
+                track.save(force_update=True)
         return HttpResponse(
             content_type='application/json', 
             status=200, 
@@ -401,15 +399,13 @@ def playArtist(request, artist_id):
 def playAlbum(request, album_id):
     if request.method == 'PUT':
         try:
-            print(album_id)
-            print(Album.objects.all())
             Album.objects.get(id=album_id)
         except:
             return HttpResponse(content_type='application/json', status=404, reason='álbum no encontrado')
         tracks = Track.objects.filter(album_id=album_id).all()
         for track in tracks:
             track.times_played += 1
-            track.save()
+            track.save(force_update=True)
         return HttpResponse(content_type='application/json', status=200, reason='canciones del álbum reproducidas')
     else:
         return HttpResponse(content_type='application/json', status=405)
@@ -419,13 +415,12 @@ def playAlbum(request, album_id):
 def playTrack(request, track_id):
     if request.method == 'PUT':
         try:
-            print(track_id)
-            print(Track.objects.all())
             track = Track.objects.get(id=track_id)
         except:
             return HttpResponse(content_type='application/json', status=404, reason='canción no encontrada')
         track.times_played += 1
-        track.save()
+        track.save(force_update=True)
+        print(track.times_played)
         return HttpResponse(content_type='application/json', status=200, reason='canción reproducida')
     else:
         return HttpResponse(content_type='application/json', status=405)
