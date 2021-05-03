@@ -241,7 +241,7 @@ def tracksPerAlbum(request, album_id):
             track = Track.objects.get(id=id)
             existe = True
         except:
-            track = Track(id=id, name=name, album_id=album_id, duration=duration)
+            track = Track(id=id, name=name, album_id=album_id, duration=duration, times_played=0)
             existe = False
             track.save()   
         artist = Album.objects.get(id=album_id).artist_id
@@ -382,10 +382,8 @@ def playArtist(request, artist_id):
         for album in albums:
             tracks = Track.objects.filter(album_id=album.id).all()
             for track in tracks:
-                print(track.times_played, track.name)
                 track.times_played += 1
-                print(track.times_played, track.name)
-                track.save(force_update=True)
+                track.save()
         return HttpResponse(
             content_type='application/json', 
             status=200, 
@@ -405,7 +403,7 @@ def playAlbum(request, album_id):
         tracks = Track.objects.filter(album_id=album_id).all()
         for track in tracks:
             track.times_played += 1
-            track.save(force_update=True)
+            track.save()
         return HttpResponse(content_type='application/json', status=200, reason='canciones del álbum reproducidas')
     else:
         return HttpResponse(content_type='application/json', status=405)
@@ -419,8 +417,7 @@ def playTrack(request, track_id):
         except:
             return HttpResponse(content_type='application/json', status=404, reason='canción no encontrada')
         track.times_played += 1
-        track.save(force_update=True)
-        print(track.times_played)
+        track.save()
         return HttpResponse(content_type='application/json', status=200, reason='canción reproducida')
     else:
         return HttpResponse(content_type='application/json', status=405)

@@ -17,4 +17,4 @@ class Track(models.Model):
     album_id = models.CharField(max_length=22)
     name = models.CharField(max_length=100)
     duration = models.FloatField()
-    times_played = 0
+    times_played = models.IntegerField(default=0)
