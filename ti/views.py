@@ -288,12 +288,8 @@ def tracksPerAlbum(request, album_id):
 @csrf_exempt
 def tracksId(request, track_id):
     if request.method == 'GET':
-        print('estoy en el get')
         try:
-            print('caigo aca', track_id)
-            print(Track.objects.all())
             track = Track.objects.get(id=track_id)
-            print('caigo aca 2')
             artist = Album.objects.get(id=track.album_id).artist_id
             base = 'https://cloudy-city-01.herokuapp.com/'
             response = json.dumps({
@@ -310,11 +306,8 @@ def tracksId(request, track_id):
         except:
             return HttpResponse(content_type='application/json', status=404, reason='canción no encontrada')
     elif request.method == 'DELETE':
-        print('estoy en delete')
         try:
-            print('caigo aca')
             Track.objects.get(id=track_id).delete()
-            print('caigo aca 2')
             return HttpResponse(content_type='application/json', status=204, reason='canción eliminada')
         except:
             return HttpResponse(content_type='application/json', status=404, reason='canción inexistente')
@@ -382,6 +375,8 @@ def artistTracks(request, artist_id):
 def playArtist(request, artist_id):
     if request.method == 'PUT':
         try:
+            print(artist_id)
+            print(Artist.objects.all())
             Artist.objects.get(id=artist_id)
         except:
             return HttpResponse(content_type='application/json', status=404, reason='artista no encontrado')
@@ -406,6 +401,8 @@ def playArtist(request, artist_id):
 def playAlbum(request, album_id):
     if request.method == 'PUT':
         try:
+            print(album_id)
+            print(Album.objects.all())
             Album.objects.get(id=album_id)
         except:
             return HttpResponse(content_type='application/json', status=404, reason='álbum no encontrado')
@@ -422,10 +419,11 @@ def playAlbum(request, album_id):
 def playTrack(request, track_id):
     if request.method == 'PUT':
         try:
-            Album.objects.get(id=album_id)
+            print(track_id)
+            print(Track.objects.all())
+            track = Track.objects.get(id=track_id)
         except:
             return HttpResponse(content_type='application/json', status=404, reason='canción no encontrada')
-        track = Track.objects.get(id=track_id)
         track.times_played += 1
         track.save()
         return HttpResponse(content_type='application/json', status=200, reason='canción reproducida')
