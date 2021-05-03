@@ -347,7 +347,7 @@ def tracks(request):
 def artistTracks(request, artist_id):
     if request.method == 'GET':
         try:
-            Album.objects.get(id=artist_id)
+            Album.objects.get(artist_id=artist_id)
             albums = Album.objects.filter(artist_id=artist_id).all()
             return_list = []
             for album in albums:
