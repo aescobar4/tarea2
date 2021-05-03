@@ -236,7 +236,7 @@ def tracksPerAlbum(request, album_id):
         except:
             return HttpResponse(content_type='application/json', status=422, reason='álbum no encontrado')
         string_to_encode = name + ":" + album_id
-        id = b64encode(name.encode()).decode('utf-8')[:22]
+        id = b64encode(string_to_encode.encode()).decode('utf-8')[:22]
         try:
             track = Track.objects.get(id=id)
             existe = True
